@@ -1,0 +1,33 @@
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Prepare build and deploy environment
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ secrets.PIPELINE_EXECUTION_ROLE }}
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
+          
+      # Set S3 BUCKET NAME
+      - run: sed -i "s/'default_region_elb_placeholder'/'${{ secrets.DEFAULT_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
+      - run: sed -i "s/'eu_central_1_region_elb_placeholder'/'${{ secrets.EU_CENTRAL_1_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
+      - run: sed -i "s/'us_east_2_region_elb_placeholder'/'${{ secrets.US_EAST_2_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
+
+      # Build and deploy stack
+      - run: echo "CLOUDFORMATION_EXECUTION_ROLE=${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}" >> $GITHUB_ENV
+      - run: sam build -u
+      - run: sam deploy --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}
