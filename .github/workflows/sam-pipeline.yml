@@ -30,4 +30,4 @@ jobs:
       # Build and deploy stack
       - run: echo "CLOUDFORMATION_EXECUTION_ROLE=${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}" >> $GITHUB_ENV
       - run: sam build -u
-      - run: sam deploy --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${CLOUDFORMATION_EXECUTION_ROLE}
+      - run: sam deploy --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}
