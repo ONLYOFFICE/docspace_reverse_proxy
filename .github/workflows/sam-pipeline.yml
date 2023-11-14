@@ -23,9 +23,9 @@ jobs:
           role-skip-session-tagging: true
           
       # Set S3 BUCKET NAME
-      - run: sed -i "s/'default_region_elb_placeholder'/'${{ secrets.DEFAULT_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
-      - run: sed -i "s/'eu_central_1_region_elb_placeholder'/'${{ secrets.EU_CENTRAL_1_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
-      - run: sed -i "s/'us_east_2_region_elb_placeholder'/'${{ secrets.US_EAST_2_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.js
+      - run: sed -i "s/'default_region_elb_placeholder'/'${{ secrets.DEFAULT_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
+      - run: sed -i "s/'eu_central_1_region_elb_placeholder'/'${{ secrets.EU_CENTRAL_1_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
+      - run: sed -i "s/'us_east_2_region_elb_placeholder'/'${{ secrets.US_EAST_2_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
       - run: echo "CLOUDFORMATION_EXECUTION_ROLE=${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}" >> $GITHUB_ENV
