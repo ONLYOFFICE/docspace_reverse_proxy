@@ -22,12 +22,17 @@ jobs:
           role-duration-seconds: 3600
           role-skip-session-tagging: true
           
-      # Set S3 BUCKET NAME
-      - run: sed -i "s/'default_region_elb_placeholder'/'${{ secrets.DEFAULT_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
-      - run: sed -i "s/'eu_central_1_region_elb_placeholder'/'${{ secrets.EU_CENTRAL_1_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
-      - run: sed -i "s/'us_east_2_region_elb_placeholder'/'${{ secrets.US_EAST_2_REGION_ELB }}'/g" ./docspace-reverse-proxy/index.mjs
+
+      - name: Replace placeholder
+        env:
+            DEFAULT_REGION_ELB: ${{ secrets.DEFAULT_REGION_ELB }}
+            EU_CENTRAL_1_REGION_ELB: ${{ secrets.EU_CENTRAL_1_REGION_ELB }}
+            US_EAST_2_REGION_ELB: ${{ secrets.US_EAST_2_REGION_ELB }}
+        run: |
+          sed -i "s/'default_region_elb_placeholder'/'${DEFAULT_REGION_ELB}'/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/'eu_central_1_region_elb_placeholder'/'${EU_CENTRAL_1_REGION_ELB}'/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/'us_east_2_region_elb_placeholder'/'${US_EAST_2_REGION_ELB }'/g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
-      - run: echo "CLOUDFORMATION_EXECUTION_ROLE=${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}" >> $GITHUB_ENV
       - run: sam build -u
       - run: sam deploy --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}

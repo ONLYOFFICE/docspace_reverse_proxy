@@ -1,3 +1,5 @@
+/*test*/
+
 'use strict';
 
 const cachedItem = {};
