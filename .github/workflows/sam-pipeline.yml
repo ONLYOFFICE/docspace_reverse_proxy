@@ -23,7 +23,7 @@ jobs:
           role-skip-session-tagging: true
           
 
-      - name: Replace placeholder
+      - name: Set ELB configuration
         env:
             DEFAULT_REGION_ELB: ${{ secrets.DEFAULT_REGION_ELB }}
             EU_CENTRAL_1_REGION_ELB: ${{ secrets.EU_CENTRAL_1_REGION_ELB }}
