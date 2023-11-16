@@ -140,14 +140,26 @@ Resources:
           KeyType: HASH
       Replicas:
         - Region: us-east-1
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 1
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 90
         - Region: us-east-2
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 1
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 90
         - Region: eu-central-1
-      ReadProvisionedThroughputSettings:
-        ReadCapacityAutoScalingSettings:
-          MinCapacity: 1
-          MaxCapacity: 1
-          TargetTrackingScalingPolicyConfiguration:
-            TargetValue: 90
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 1
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 90
       WriteProvisionedThroughputSettings:
         WriteCapacityAutoScalingSettings:
           MinCapacity: 1
