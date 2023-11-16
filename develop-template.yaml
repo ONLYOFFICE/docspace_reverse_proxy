@@ -143,28 +143,28 @@ Resources:
           ReadProvisionedThroughputSettings:
             ReadCapacityAutoScalingSettings:
               MinCapacity: 1
-              MaxCapacity: 1
+              MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 90
+                TargetValue: 70
         - Region: us-east-2
           ReadProvisionedThroughputSettings:
             ReadCapacityAutoScalingSettings:
               MinCapacity: 1
-              MaxCapacity: 1
+              MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 90
+                TargetValue: 70
         - Region: eu-central-1
           ReadProvisionedThroughputSettings:
             ReadCapacityAutoScalingSettings:
               MinCapacity: 1
-              MaxCapacity: 1
+              MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 90
+                TargetValue: 70
       WriteProvisionedThroughputSettings:
         WriteCapacityAutoScalingSettings:
           MinCapacity: 1
-          MaxCapacity: 1
+          MaxCapacity: 10
           TargetTrackingScalingPolicyConfiguration:
-            TargetValue: 90
+            TargetValue: 70
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
