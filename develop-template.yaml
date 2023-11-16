@@ -142,10 +142,11 @@ Resources:
         - Region: us-east-1
         - Region: us-east-2
         - Region: eu-central-1
-      WriteCapacityAutoScalingSettings:
-        MinCapacity: 1
-        MaxCapacity: 1
-        TargetTrackingScalingPolicyConfiguration:
-          TargetValue: 90
+      WriteProvisionedThroughputSettings:
+        WriteCapacityAutoScalingSettings:
+          MinCapacity: 1
+          MaxCapacity: 1
+          TargetTrackingScalingPolicyConfiguration:
+            TargetValue: 90
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
