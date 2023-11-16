@@ -23,15 +23,18 @@ jobs:
           role-skip-session-tagging: true
          
       # Set DynamoDB table name based on branch
-      - name: Set DynamoDB table name
+      - name: Set DynamoDB table name variable
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
             echo "DYNAMODB_TABLE_NAME=${{ secrets.DEVELOP_DYNAMODB_TABLE_NAME }}" >> $GITHUB_ENV
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DYNAMODB_TABLE_NAME=${{ secrets.MAIN_DYNAMODB_TABLE_NAME }}" >> $GITHUB_ENV
           fi
-          sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
+      
+      - name: Set DynamoDB table name at function
+        run: sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
 
+      # Set EKS load balancer endpoints
       - name: Set ELB configuration
         env:
             DEFAULT_REGION_ELB: ${{ secrets.DEFAULT_REGION_ELB }}
