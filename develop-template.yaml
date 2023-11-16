@@ -142,10 +142,6 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
       StreamSpecification:
-        StreamEnabled: true
         StreamViewType: NEW_AND_OLD_IMAGES
-      Replicas:
-        - RegionName: us-east-2
-        - RegionName: eu-central-1
       TableClass: STANDARD
       DeletionProtectionEnabled: false
