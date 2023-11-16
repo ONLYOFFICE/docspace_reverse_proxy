@@ -128,8 +128,8 @@ Resources:
                 - logs:PutLogEvents
               Resource:
                 - arn:aws:logs:*:*:log-group:*:*
-  DynamoDBTable:
-    Type: AWS::DynamoDB::Table
+  GlobalDynamoDBTable:
+    Type: AWS::DynamoDB::GlobalTable
     Properties:
       TableName: develop-docspace-tenants_region
       AttributeDefinitions:
@@ -141,17 +141,11 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
-      TableClass: STANDARD
-      DeletionProtectionEnabled: false
-  GlobalDynamoDBTable:
-    Type: AWS::DynamoDB::GlobalTable
-    Properties:
-      TableName: develop-docspace-tenants_region
-      ReplicationGroup:
-        - RegionName: us-east-1 # Primary region, assuming it's us-east-1
+      Replicas:
+        - RegionName: us-east-1
         - RegionName: us-east-2
         - RegionName: eu-central-1
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
+      TableClass: STANDARD
+      DeletionProtectionEnabled: false
