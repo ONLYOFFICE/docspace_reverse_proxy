@@ -144,4 +144,7 @@ Resources:
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
       TableClass: STANDARD
+      Replicas:
+        - Region: us-east-2
+        - Region: eu-central-1
       DeletionProtectionEnabled: false
