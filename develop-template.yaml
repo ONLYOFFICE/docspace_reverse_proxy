@@ -138,14 +138,9 @@ Resources:
       KeySchema:
         - AttributeName: tenant_domain
           KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
       Replicas:
-        - RegionName: us-east-1
-        - RegionName: us-east-2
-        - RegionName: eu-central-1
+        - Region: us-east-1
+        - Region: us-east-2
+        - Region: eu-central-1
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
-      TableClass: STANDARD
-      DeletionProtectionEnabled: false
