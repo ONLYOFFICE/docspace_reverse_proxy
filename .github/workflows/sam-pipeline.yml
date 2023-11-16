@@ -30,7 +30,7 @@ jobs:
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
             echo "DYNAMODB_TABLE_NAME=${{ secrets.MAIN_DYNAMODB_TABLE_NAME }}" >> $GITHUB_ENV
           fi
-          sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./origin-response-function/handler.js
+          sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
 
       - name: Set ELB configuration
         env:
