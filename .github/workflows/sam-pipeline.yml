@@ -21,7 +21,7 @@ jobs:
           role-to-assume: ${{ secrets.PIPELINE_EXECUTION_ROLE }}
           role-duration-seconds: 3600
           role-skip-session-tagging: true
-         
+
       # Set DynamoDB table name based on branch
       - name: Set DynamoDB table name variable
         run: |
