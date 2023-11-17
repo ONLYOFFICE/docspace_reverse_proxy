@@ -21,8 +21,18 @@ jobs:
           role-to-assume: ${{ secrets.PIPELINE_EXECUTION_ROLE }}
           role-duration-seconds: 3600
           role-skip-session-tagging: true
-          
 
+      # Set DynamoDB table name based on branch
+      - name: Set DynamoDB table name variable
+        run: |
+          if [[ "${{ github.ref_name }}" == "develop" ]]; then
+            export DYNAMODB_TABLE_NAME="${{ secrets.DEVELOP_DYNAMODB_TABLE_NAME }}"
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            export DYNAMODB_TABLE_NAME="${{ secrets.MAIN_DYNAMODB_TABLE_NAME }}"
+          fi
+          sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
+
+      # Set EKS load balancer endpoints
       - name: Set ELB configuration
         env:
             DEFAULT_REGION_ELB: ${{ secrets.DEFAULT_REGION_ELB }}
@@ -34,5 +44,5 @@ jobs:
           sed -i "s/us_east_2_region_elb_placeholder/${US_EAST_2_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
-      - run: sam build -u
-      - run: sam deploy --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}
+      - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
+      - run: sam deploy --template-file ${GITHUB_REF_NAME}-template.yaml --config-file ${GITHUB_REF_NAME}-config.toml --role-arn ${{ secrets.CLOUDFORMATION_EXECUTION_ROLE }}

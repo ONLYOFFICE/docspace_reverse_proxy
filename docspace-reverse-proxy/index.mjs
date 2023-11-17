@@ -14,6 +14,8 @@ const ddbRegionsMap = {
   "us-east-2": "us-east-2"
 };
 
+const dynamodbTableName = "dynamodb_table_name_placeholder";
+
 const execRegionCode = process.env.AWS_REGION;
 
 var ddbClientRegion = ddbRegionsMap["default"];
@@ -95,7 +97,7 @@ export const handler = async (event, context, callback) => {
         'tenant_domain': { S: tenantDomain }
       },
       ProjectionExpression: "tenant_region",
-      TableName: 'docspace-tenants_region'
+      TableName: dynamodbTableName
     };
 
     console.log("[DynamoDb] before send command get item %s with tenant domain %s", getItemParams, tenantDomain);
