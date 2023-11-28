@@ -129,6 +129,13 @@ Resources:
                 - logs:PutLogEvents
               Resource:
                 - arn:aws:logs:*:*:log-group:*:*
+            - Effect: Allow
+              Action:
+                - sts:AssumeRole
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+                  - edgelambda.amazonaws.com
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
     Properties:
