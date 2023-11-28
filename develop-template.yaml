@@ -29,7 +29,7 @@ Resources:
       SnapStart:
         ApplyOn: None
       PackageType: Zip
-      Role: !GetAtt WebEdgeLambdaRole.Arn
+      Role: !GetAtt DocspaceReverseProxyRole.Arn
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
@@ -73,7 +73,7 @@ Resources:
         StreamViewType: NEW_AND_OLD_IMAGES
 
   # ==== ROLES ==== #
-  WebEdgeLambdaRole:
+  DocspaceReverseProxyRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -91,7 +91,7 @@ Resources:
     Properties:
       Description: Allows functions to write logs
       Roles:
-        - !Ref WebEdgeLambdaRole
+        - !Ref DocspaceReverseProxyRole
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -107,7 +107,7 @@ Resources:
     Properties:
       Description: Allows functions to write logs
       Roles:
-        - !Ref WebEdgeLambdaRole
+        - !Ref DocspaceReverseProxyRole
       PolicyDocument:
         Version: 2012-10-17
         Statement:
