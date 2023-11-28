@@ -34,10 +34,10 @@ jobs:
 
       - name: Set ELB configuration
         run: |
-          BRANCH_PREFIX="${{ github.ref_name }}" # develop or main
-          DEFAULT_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_DEFAULT_REGION_ELB'] }}"
-          EU_CENTRAL_1_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_EU_CENTRAL_1_REGION_ELB'] }}"
-          US_EAST_2_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_US_EAST_2_REGION_ELB'] }}"
+          export BRANCH_PREFIX="${{ github.ref_name }}" # develop or main
+          export DEFAULT_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_DEFAULT_REGION_ELB'] }}"
+          export EU_CENTRAL_1_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_EU_CENTRAL_1_REGION_ELB'] }}"
+          export US_EAST_2_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_US_EAST_2_REGION_ELB'] }}"
         
           sed -i "s/default_region_elb_placeholder/${DEFAULT_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
           sed -i "s/eu_central_1_region_elb_placeholder/${EU_CENTRAL_1_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
