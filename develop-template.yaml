@@ -31,21 +31,6 @@ Resources:
       PackageType: Zip
       Role: !GetAtt WebEdgeLambdaRole.Arn
 
-      Policies:
-        - Statement:
-            - Effect: Allow
-              Action:
-                - iam:CreateServiceLinkedRole
-              Resource: "*"
-              Condition:
-                StringEquals:
-                  iam:AWSServiceName:
-                    - replication.dynamodb.amazonaws.com
-                    - dax.amazonaws.com
-                    - dynamodb.application-autoscaling.amazonaws.com
-                    - contributorinsights.dynamodb.amazonaws.com
-                    - kinesisreplication.dynamodb.amazonaws.com
-
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
     Properties:
