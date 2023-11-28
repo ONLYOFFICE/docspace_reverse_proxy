@@ -34,14 +34,21 @@ jobs:
 
       - name: Set ELB configuration
         run: |
-          export BRANCH_PREFIX="${{ github.ref_name }}" # develop or main
-          export DEFAULT_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_DEFAULT_REGION_ELB'] }}"
-          export EU_CENTRAL_1_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_EU_CENTRAL_1_REGION_ELB'] }}"
-          export US_EAST_2_REGION_ELB="${{ secrets[BRANCH_PREFIX + '_US_EAST_2_REGION_ELB'] }}"
+          BRANCH="${{ github.ref_name }}" # develop or main
+          DEFAULT_REGION_ELB=$(eval echo \$${BRANCH}_DEFAULT_REGION_ELB)
+          EU_CENTRAL_1_REGION_ELB=$(eval echo \$${BRANCH}_EU_CENTRAL_1_REGION_ELB)
+          US_EAST_2_REGION_ELB=$(eval echo \$${BRANCH}_US_EAST_2_REGION_ELB)
         
-          sed -i "s/default_region_elb_placeholder/${DEFAULT_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/eu_central_1_region_elb_placeholder/${EU_CENTRAL_1_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/us_east_2_region_elb_placeholder/${US_EAST_2_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/default_region_elb_placeholder/$DEFAULT_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/eu_central_1_region_elb_placeholder/$EU_CENTRAL_1_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/us_east_2_region_elb_placeholder/$US_EAST_2_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+        env:
+          DEVELOP_DEFAULT_REGION_ELB: ${{ secrets.DEVELOP_DEFAULT_REGION_ELB }}
+          MAIN_DEFAULT_REGION_ELB: ${{ secrets.MAIN_DEFAULT_REGION_ELB }}
+          DEVELOP_EU_CENTRAL_1_REGION_ELB: ${{ secrets.DEVELOP_EU_CENTRAL_1_REGION_ELB }}
+          MAIN_EU_CENTRAL_1_REGION_ELB: ${{ secrets.MAIN_EU_CENTRAL_1_REGION_ELB }}
+          DEVELOP_US_EAST_2_REGION_ELB: ${{ secrets.DEVELOP_US_EAST_2_REGION_ELB }}
+          MAIN_US_EAST_2_REGION_ELB: ${{ secrets.MAIN_US_EAST_2_REGION_ELB }}
 
       # Build and deploy stack
       - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
