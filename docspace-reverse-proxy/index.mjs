@@ -6,12 +6,30 @@ const regionsMap = {
   "eu-central-1": "eu_central_1_region_elb_placeholder",
   "us-east-2": "us_east_2_region_elb_placeholder"
 };
+
 const ddbRegionsMap = {
-  "default": "us-east-1",
+
+  "default": "eu-central-1",
+
   "us-east-1": "us-east-1",
+  "us-east-2": "us-east-2",
+  "us-west-1": "us-east-2",
+  "us-west-2": "us-east-2",
+
   "eu-central-1": "eu-central-1",
   "eu-west-1": "eu-central-1",
-  "us-east-2": "us-east-2"
+  "eu-west-2": "eu-central-1",
+  "eu-west-3": "eu-central-1",
+  "eu-north-1": "eu-central-1",
+  "me-central-1": "eu-central-1",
+
+  "ap-south-1": "eu-central-1",
+  "ap-northeast-3": "eu-central-1",
+  "ap-northeast-2": "eu-central-1",
+  "ap-southeast-1": "eu-central-1",
+  "ap-southeast-2": "eu-central-1",
+  "ap-northeast-1": "eu-central-1"
+
 };
 
 const dynamodbTableName = "dynamodb_table_name_placeholder";
@@ -28,7 +46,41 @@ if (ddbRegionsMap[execRegionCode]) {
 
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 
-const ddbClient = new DynamoDBClient({ region: ddbClientRegion });
+async function getTenantRegion(ddbRegion, tenantDomain) {
+
+  console.log("getTenantRegion params ddbRegion: %s, tenantDomain: %s", ddbRegion, tenantDomain);
+
+  const ddbClient = new DynamoDBClient({ region: ddbRegion });
+
+  const getItemParams = {
+    Key: {
+      'tenant_domain': { S: tenantDomain }
+    },
+    ProjectionExpression: "tenant_region",
+    TableName: dynamodbTableName
+  };
+
+  console.log("[DynamoDb] before send command get item %s with tenant domain %s", getItemParams, tenantDomain);
+
+  const response = await ddbClient.send(new GetItemCommand(getItemParams));
+
+  console.log("[DynamoDb] responce send command get item %s with tenant domain %s", response, tenantDomain);
+
+  if (response && response.Item) {
+
+    const tenantRegion = regionsMap[response.Item["tenant_region"]["S"]];
+
+    console.log("Added item %s to cache with key %s", tenantRegion, tenantDomain);
+
+    return tenantRegion;
+
+  } else {
+
+    console.log("Error recieve data from DynamoDB with tenant domain %s in region %s", tenantDomain, ddbRegion);
+
+    return null;
+  }
+}
 
 export const handler = async (event, context, callback) => {
   console.log(JSON.stringify(event));
@@ -76,7 +128,6 @@ export const handler = async (event, context, callback) => {
       console.log("Register portal request: Change request origin to %s", originDomain);
     }
 
-
     console.log("request after changed %s", JSON.stringify(request));
 
     // Return to CloudFront
@@ -91,39 +142,24 @@ export const handler = async (event, context, callback) => {
 
   }
   else {
+    originDomain = await getTenantRegion(ddbClientRegion, tenantDomain);
 
-    const getItemParams = {
-      Key: {
-        'tenant_domain': { S: tenantDomain }
-      },
-      ProjectionExpression: "tenant_region",
-      TableName: dynamodbTableName
-    };
+    if (originDomain == null) {
 
-    console.log("[DynamoDb] before send command get item %s with tenant domain %s", getItemParams, tenantDomain);
+      console.log("originDomain is null. Attempt 2. Trying get value from default region %s", ddbRegionsMap["default"]);
 
-    const responce = await ddbClient.send(new GetItemCommand(getItemParams));
+      originDomain = await getTenantRegion(ddbRegionsMap["default"], tenantDomain);
 
-    console.log("[DynamoDb] responce send command get item %s with tenant domain %s", responce, tenantDomain);
+      if (originDomain == null) {
+        console.log("originDomain is null. Using default");
 
-    if (responce && responce.Item) {
-
-      originDomain = regionsMap[responce.Item["tenant_region"]["S"]];
-
-      console.log("Added item %s to cache with key %s", originDomain, tenantDomain);
-
-
-    } else {
-
-      originDomain = regionsMap["default"];
-
-      console.log("Error recieve data from DynamoDB with tenant domain %s", tenantDomain);
-
+        originDomain = regionsMap["default"];
+      }
     }
   }
 
   cachedItem[tenantDomain] = {
-    expiresOn: Date.now() + 24 * 3600 * 1000, // Set expiry time of 24H
+    expiresOn: Date.now() + 15 * 60 * 1000, // Set expiry time of 15 minutes
     value: originDomain
   };
 
