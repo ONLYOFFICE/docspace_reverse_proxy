@@ -32,16 +32,21 @@ jobs:
           fi
           sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
 
-      # Set EKS load balancer endpoints
       - name: Set ELB configuration
-        env:
-            DEFAULT_REGION_ELB: ${{ secrets.DEFAULT_REGION_ELB }}
-            EU_CENTRAL_1_REGION_ELB: ${{ secrets.EU_CENTRAL_1_REGION_ELB }}
-            US_EAST_2_REGION_ELB: ${{ secrets.US_EAST_2_REGION_ELB }}
         run: |
-          sed -i "s/default_region_elb_placeholder/${DEFAULT_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/eu_central_1_region_elb_placeholder/${EU_CENTRAL_1_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/us_east_2_region_elb_placeholder/${US_EAST_2_REGION_ELB}/g" ./docspace-reverse-proxy/index.mjs
+          if [[ "${{ github.ref_name }}" == "develop" ]]; then
+            export DEFAULT_REGION_ELB="${{ secrets.DEVELOP_DEFAULT_REGION_ELB }}"
+            export EU_CENTRAL_1_REGION_ELB="${{ secrets.DEVELOP_EU_CENTRAL_1_REGION_ELB }}"
+            export US_EAST_2_REGION_ELB="${{ secrets.DEVELOP_US_EAST_2_REGION_ELB }}"
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            export DEFAULT_REGION_ELB="${{ secrets.MAIN_DEFAULT_REGION_ELB }}"
+            export EU_CENTRAL_1_REGION_ELB="${{ secrets.MAIN_EU_CENTRAL_1_REGION_ELB }}"
+            export US_EAST_2_REGION_ELB="${{ secrets.MAIN_US_EAST_2_REGION_ELB }}"
+          fi
+
+          sed -i "s/default_region_elb_placeholder/$DEFAULT_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/eu_central_1_region_elb_placeholder/$EU_CENTRAL_1_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/us_east_2_region_elb_placeholder/$US_EAST_2_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
       - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
