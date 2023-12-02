@@ -9,7 +9,7 @@ const regionsMap = {
 
 const ddbRegionsMap = {
 
-  "default": "eu-central-1",
+  "default": "us-west-2",
 
   "us-east-1": "us-east-1",
   "us-east-2": "us-east-2",
