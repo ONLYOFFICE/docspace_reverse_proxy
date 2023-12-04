@@ -56,6 +56,13 @@ Resources:
               MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
                 TargetValue: 70
+        - Region: us-west-2
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 10
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 70
         - Region: eu-central-1
           ReadProvisionedThroughputSettings:
             ReadCapacityAutoScalingSettings:
