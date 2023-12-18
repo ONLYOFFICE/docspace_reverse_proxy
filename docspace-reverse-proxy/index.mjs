@@ -113,8 +113,8 @@ export const handler = async (event, context, callback) => {
           },
       };
       
-      callback(null, response);
-      return;
+      return callback(null, response);
+      
   }
 
   let originDomain;
