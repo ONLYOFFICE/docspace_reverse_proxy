@@ -9,6 +9,8 @@ export const handler = async (event, context, callback) => {
     const headers = request.headers;
     let tenantDomain = headers.host[0].value;
 
+    console.log("Tenant domain: %s", tenantDomain);
+
     const workspaceRegex = /(\/products\/|\/addons\/|.aspx)/i;
 
     if (workspaceRegex.test(request.uri))
@@ -31,7 +33,8 @@ export const handler = async (event, context, callback) => {
             },
         };
         
-        return callback(null, response);
-        
+        return callback(null, response);   
     }
+
+    return callback(null, request);
 }
