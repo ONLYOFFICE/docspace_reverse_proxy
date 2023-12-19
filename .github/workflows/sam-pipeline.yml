@@ -3,6 +3,7 @@ on:
     branches:
       - develop
       - main
+      - test
 
 jobs:
   build-deploy:
