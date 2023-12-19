@@ -9,6 +9,8 @@ export const handler = async (event, context, callback) => {
     const headers = request.headers;
     let tenantDomain = headers.host[0].value;
 
+    const workspaceRegex = /(\/products\/|\/addons\/|.aspx)/i;
+
     if (workspaceRegex.test(request.uri))
     {
         const newurl = `https://${tenantDomain.replace('onlyoffice.io', 'teamlab.info')}${request.uri}?${request.querystring}`;
