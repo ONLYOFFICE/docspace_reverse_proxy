@@ -11,7 +11,7 @@ export const handler = async (event, context, callback) => {
 
     console.log("Tenant domain: %s", tenantDomain);
 
-    const workspaceRegex = /(\/products\/|\/addons\/|.aspx)/i;
+    const workspaceRegex = /(\/products\/|\/addons\/|\.aspx)/i;
     const confirmPageRegex = /confirm\.aspx/i;
 
     if (workspaceRegex.test(request.uri) && !confirmPageRegex.test(request.uri))
