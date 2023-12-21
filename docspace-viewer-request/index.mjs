@@ -11,10 +11,14 @@ export const handler = async (event, context, callback) => {
 
     console.log("Tenant domain: %s", tenantDomain);
 
-    const workspaceRegex = /(\/products\/|\/addons\/|.aspx)/i;
+    const workspaceRegex = /(\/products\/|\/addons\/|\.aspx)/i;
+    const confirmPageRegex = /confirm\.aspx/i;
+    const editorPageRegex = /\/Products\/Files\/DocEditor\.aspx/i;
 
-    if (workspaceRegex.test(request.uri))
+    //if (workspaceRegex.test(request.uri) && !confirmPageRegex.test(request.uri))
+    if (editorPageRegex.test(request.uri))
     {
+        //const newurl = `https://${tenantDomain.replace('onlyoffice.com', 'onlyoffice.co')}${request.uri}?${request.querystring}`;
         const newurl = `https://${tenantDomain.replace('onlyoffice.io', 'teamlab.info')}${request.uri}?${request.querystring}`;
         console.log("redirect to: %s", newurl);
 
