@@ -15,7 +15,7 @@ export const handler = async (event, context, callback) => {
 
     if (workspaceRegex.test(request.uri))
     {
-        const newurl = `https://${tenantDomain.replace('onlyoffice.io', 'teamlab.info')}${request.uri}?${request.querystring}`;
+        const newurl = `https://${tenantDomain.replace(domain_name_replace_placeholder)}${request.uri}?${request.querystring}`;
         console.log("redirect to: %s", newurl);
 
         const response = {
