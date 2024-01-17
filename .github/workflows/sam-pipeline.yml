@@ -44,17 +44,14 @@ jobs:
       - name: Set regions_map and ddb_regions_map variables
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
-            echo "REGIONS_MAP=$(echo '${{ secrets.DEVELOP_REGIONS_MAP_BASE64 }}' | base64 -d)" >> $GITHUB_ENV
-            echo "DDB_REGIONS_MAP=$(echo '${{ secrets.DEVELOP_DDB_REGIONS_MAP_BASE64 }}' | base64 -d)" >> $GITHUB_ENV
+            echo '${{ secrets.DEVELOP_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
+            echo '${{ secrets.DEVELOP_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            echo "REGIONS_MAP=$(echo '${{ secrets.MAIN_REGIONS_MAP_BASE64 }}' | base64 -d)" >> $GITHUB_ENV
-            echo "DDB_REGIONS_MAP=$(echo '${{ secrets.MAIN_DDB_REGIONS_MAP_BASE64 }}' | base64 -d)" >> $GITHUB_ENV
+            echo '${{ secrets.MAIN_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
+            echo '${{ secrets.MAIN_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
           fi
-
-      - name: Update reverse proxy function parameters
-        run: |
-          sed -i "s/regionsMap_placeholder/$REGIONS_MAP/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/ddbRegionsMap_placeholder/$DDB_REGIONS_MAP/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s|regionsMap_placeholder|$(cat regions_map.tmp)|g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s|ddbRegionsMap_placeholder|$(cat ddb_regions_map.tmp)|g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
       - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
