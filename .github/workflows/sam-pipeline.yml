@@ -50,8 +50,8 @@ jobs:
             echo '${{ secrets.MAIN_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
             echo '${{ secrets.MAIN_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
           fi
-          sed -i "s|regionsMap_placeholder|$(cat regions_map.tmp)|g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s|ddbRegionsMap_placeholder|$(cat ddb_regions_map.tmp)|g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/regionsMap_placeholder/$(cat regions_map.tmp)/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/ddbRegionsMap_placeholder/$(cat ddb_regions_map.tmp)/g" ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
       - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
