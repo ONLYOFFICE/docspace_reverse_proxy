@@ -11,11 +11,8 @@ export const handler = async (event, context, callback) => {
 
     console.log("Tenant domain: %s", tenantDomain);
 
-    const workspaceRegex = /(\/products\/|\/addons\/|\.aspx)/i;
-    const confirmPageRegex = /confirm\.aspx/i;
     const editorPageRegex = /\/Products\/Files\/DocEditor\.aspx/i;
 
-    //if (workspaceRegex.test(request.uri) && !confirmPageRegex.test(request.uri))
     if (editorPageRegex.test(request.uri))
     {
         const newurl = `https://${tenantDomain.replace(domain_name_replace_placeholder)}${request.uri}?${request.querystring}`;
