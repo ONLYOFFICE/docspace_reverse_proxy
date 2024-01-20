@@ -93,6 +93,13 @@ Resources:
               MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
                 TargetValue: 70
+        - Region: ap-southeast-1
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 10
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 70
       WriteProvisionedThroughputSettings:
         WriteCapacityAutoScalingSettings:
           MinCapacity: 1
