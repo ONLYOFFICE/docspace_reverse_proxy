@@ -2,34 +2,11 @@
 
 const cachedItem = {};
 const regionsMap = {
-  "default": "default_region_elb_placeholder",
-  "eu-central-1": "eu_central_1_region_elb_placeholder",
-  "us-west-2": "us_east_2_region_elb_placeholder"
+regionsMap_placeholder
 };
 
 const ddbRegionsMap = {
-
-  "default": "us-west-2",
-
-  "us-east-1": "us-east-1",
-  "us-east-2": "us-east-2",
-  "us-west-1": "us-east-2",
-  "us-west-2": "us-east-2",
-
-  "eu-central-1": "eu-central-1",
-  "eu-west-1": "eu-central-1",
-  "eu-west-2": "eu-central-1",
-  "eu-west-3": "eu-central-1",
-  "eu-north-1": "eu-central-1",
-  "me-central-1": "eu-central-1",
-
-  "ap-south-1": "ap-southeast-1",
-  "ap-northeast-3": "ap-southeast-1",
-  "ap-northeast-2": "ap-southeast-1",
-  "ap-southeast-1": "ap-southeast-1",
-  "ap-southeast-2": "ap-southeast-1",
-  "ap-northeast-1": "ap-southeast-1"
-
+ddbRegionsMap_placeholder
 };
 
 const dynamodbTableName = "dynamodb_table_name_placeholder";

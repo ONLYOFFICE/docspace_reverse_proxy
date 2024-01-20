@@ -30,7 +30,30 @@ Resources:
         ApplyOn: None
       PackageType: Zip
       Role: !GetAtt DocspaceReverseProxyRole.Arn
-      
+
+  docspaceviewerrequest:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: docspace-viewer-request/
+      Description: ""
+      MemorySize: 128
+      Timeout: 3
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      EphemeralStorage:
+        Size: 512
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+      SnapStart:
+        ApplyOn: None
+      PackageType: Zip
+      Role: !GetAtt DocspaceReverseProxyRole.Arn
+
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
     Properties:
@@ -63,6 +86,13 @@ Resources:
               MaxCapacity: 10
               TargetTrackingScalingPolicyConfiguration:
                 TargetValue: 70
+        - Region: us-west-2
+          ReadProvisionedThroughputSettings:
+            ReadCapacityAutoScalingSettings:
+              MinCapacity: 1
+              MaxCapacity: 10
+              TargetTrackingScalingPolicyConfiguration:
+                TargetValue: 70
         - Region: ap-southeast-1
           ReadProvisionedThroughputSettings:
             ReadCapacityAutoScalingSettings:
@@ -78,6 +108,7 @@ Resources:
             TargetValue: 70
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
+
   # ==== ROLES ==== #
   DocspaceReverseProxyRole:
     Type: AWS::IAM::Role

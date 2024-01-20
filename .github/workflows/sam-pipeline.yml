@@ -22,7 +22,7 @@ jobs:
           role-duration-seconds: 3600
           role-skip-session-tagging: true
 
-      # Set DynamoDB table name based on branch
+      # Set variables
       - name: Set DynamoDB table name variable
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
@@ -31,22 +31,27 @@ jobs:
             export DYNAMODB_TABLE_NAME="${{ secrets.MAIN_DYNAMODB_TABLE_NAME }}"
           fi
           sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
-
-      - name: Set ELB configuration
+      
+      - name: Set viewer request domain name variable
         run: |
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
-            export DEFAULT_REGION_ELB="${{ secrets.DEVELOP_DEFAULT_REGION_ELB }}"
-            export EU_CENTRAL_1_REGION_ELB="${{ secrets.DEVELOP_EU_CENTRAL_1_REGION_ELB }}"
-            export US_EAST_2_REGION_ELB="${{ secrets.DEVELOP_US_EAST_2_REGION_ELB }}"
+            export DOMAIN_NAMES="${{ secrets.DEVELOP_DOMAIN_NAMES }}"
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
-            export DEFAULT_REGION_ELB="${{ secrets.MAIN_DEFAULT_REGION_ELB }}"
-            export EU_CENTRAL_1_REGION_ELB="${{ secrets.MAIN_EU_CENTRAL_1_REGION_ELB }}"
-            export US_EAST_2_REGION_ELB="${{ secrets.MAIN_US_EAST_2_REGION_ELB }}"
+            export DOMAIN_NAMES="${{ secrets.MAIN_DOMAIN_NAMES }}"
           fi
+          sed -i "s/domain_name_replace_placeholder/${DOMAIN_NAMES}/g" ./docspace-viewer-request/index.mjs
 
-          sed -i "s/default_region_elb_placeholder/$DEFAULT_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/eu_central_1_region_elb_placeholder/$EU_CENTRAL_1_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
-          sed -i "s/us_east_2_region_elb_placeholder/$US_EAST_2_REGION_ELB/g" ./docspace-reverse-proxy/index.mjs
+      - name: Set regions_map and ddb_regions_map variables
+        run: |
+          if [[ "${{ github.ref_name }}" == "develop" ]]; then
+            echo '${{ secrets.DEVELOP_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
+            echo '${{ secrets.DEVELOP_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo '${{ secrets.MAIN_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
+            echo '${{ secrets.MAIN_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
+          fi
+          awk -v rmap="$(<regions_map.tmp)" '{ gsub(/regionsMap_placeholder/, rmap); print; }' ./docspace-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./docspace-reverse-proxy/index.mjs
+          awk -v rmap="$(<ddb_regions_map.tmp)" '{ gsub(/ddbRegionsMap_placeholder/, rmap); print; }' ./docspace-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./docspace-reverse-proxy/index.mjs
 
       # Build and deploy stack
       - run: sam build -u --template-file ${GITHUB_REF_NAME}-template.yaml
