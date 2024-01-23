@@ -86,7 +86,8 @@ export const handler = async (event, context, callback) => {
     if (regionFromRequest == null) {
       console.log("Register portal request: awsRegion param is null. Trying set to default");
 
-      body["awsRegion"] = "eu-central-1";
+      originDomain = regionsMap["default"];
+      body["awsRegion"] = ddbRegionsMap["default"];
       request.body.data = Buffer.from(JSON.stringify(body), 'utf8').toString('base64');
       request.body.action = "replace";
 
