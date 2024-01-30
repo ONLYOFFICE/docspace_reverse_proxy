@@ -37,11 +37,11 @@ async function getTenantRegion(ddbRegion, tenantDomain) {
     TableName: dynamodbTableName
   };
 
-  console.log("[DynamoDb] before send command get item %s with tenant domain %s", getItemParams, tenantDomain);
+  console.log("[DynamoDb] before send command get item %s with tenant domain %s", JSON.stringify(getItemParams), tenantDomain);
 
   const response = await ddbClient.send(new GetItemCommand(getItemParams));
 
-  console.log("[DynamoDb] responce send command get item %s with tenant domain %s", response, tenantDomain);
+  console.log("[DynamoDb] responce send command get item %s with tenant domain %s", JSON.stringify(response), tenantDomain);
 
   if (response && response.Item) {
 
@@ -72,12 +72,18 @@ export const handler = async (event, context, callback) => {
 
   let originDomain;
 
-  if (request.uri == "/apisystem/portal/register" && request.method == "POST") {
-    console.log("this is body %s", request.body);
+  if (request.uri.toLowerCase() == "/apisystem/portal/register" && request.method == "POST") {
+    console.log("START: Register portal request");
+
+    console.log("Register portal request body %s", request.body);
 
     let body = JSON.parse(Buffer.from(request.body.data, 'base64').toString('utf8'));
     let regionFromRequest = body["awsRegion"];
     let portalName = body["portalName"];
+
+    if(regionFromRequest !== null && regionFromRequest !== ''  && regionFromRequest!==undefined) {
+      regionFromRequest = regionFromRequest.toLowerCase();
+    }
 
     originDomain = regionsMap[regionFromRequest];
 
@@ -107,6 +113,8 @@ export const handler = async (event, context, callback) => {
     }
 
     console.log("request after changed %s", JSON.stringify(request));
+
+    console.log("END: Register portal request");
 
     // Return to CloudFront
     return callback(null, request);
