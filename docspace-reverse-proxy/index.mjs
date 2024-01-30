@@ -72,12 +72,16 @@ export const handler = async (event, context, callback) => {
 
   let originDomain;
 
-  if (request.uri == "/apisystem/portal/register" && request.method == "POST") {
+  if (request.uri.toLowerCase() == "/apisystem/portal/register" && request.method == "POST") {
     console.log("this is body %s", request.body);
 
     let body = JSON.parse(Buffer.from(request.body.data, 'base64').toString('utf8'));
     let regionFromRequest = body["awsRegion"];
     let portalName = body["portalName"];
+
+    if(regionFromRequest !== null && regionFromRequest !== ''  && regionFromRequest!==undefined) {
+      regionFromRequest = regionFromRequest.toLowerCase();
+    }
 
     originDomain = regionsMap[regionFromRequest];
 
