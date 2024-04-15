@@ -131,11 +131,25 @@ Resources:
               - logs:CreateLogStream
               - logs:PutLogEvents
             Resource: "*"
+  
+  PutMetricsPolicy:
+  Type: AWS::IAM::ManagedPolicy
+  Properties:
+    Description: Allows functions to put metrics
+    Roles:
+      - !Ref DocspaceReverseProxyRole
+    PolicyDocument:
+      Version: 2012-10-17
+      Statement:
+        - Effect: Allow
+          Action:
+            - cloudwatch:PutMetricData
+          Resource: "*"
 
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows functions to interact with aws
+      Description: Set dynamodb permissions
       Roles:
         - !Ref DocspaceReverseProxyRole
       PolicyDocument:
@@ -159,7 +173,6 @@ Resources:
               - cloudwatch:GetMetricStatistics
               - cloudwatch:ListMetrics
               - cloudwatch:PutMetricAlarm
-              - cloudwatch:PutMetricData
               - cloudwatch:GetMetricData
               - datapipeline:ActivatePipeline
               - datapipeline:CreatePipeline
