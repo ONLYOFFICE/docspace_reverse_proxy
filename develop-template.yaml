@@ -135,7 +135,7 @@ Resources:
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows functions to write logs
+      Description: Allows functions to interact with aws
       Roles:
         - !Ref DocspaceReverseProxyRole
       PolicyDocument:
@@ -159,6 +159,7 @@ Resources:
               - cloudwatch:GetMetricStatistics
               - cloudwatch:ListMetrics
               - cloudwatch:PutMetricAlarm
+              - cloudwatch:PutMetricData
               - cloudwatch:GetMetricData
               - datapipeline:ActivatePipeline
               - datapipeline:CreatePipeline
