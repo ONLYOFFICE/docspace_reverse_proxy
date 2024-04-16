@@ -125,26 +125,10 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect: Deny
+          - Effect: Allow
             Action:
-              - logs:CreateLogGroup
-              - logs:CreateLogStream
-              - logs:PutLogEvents
+              - cloudwatch:PutMetricData
             Resource: "*"
-  
-  PutMetricsPolicy:
-  Type: AWS::IAM::ManagedPolicy
-  Properties:
-    Description: Allows functions to put metrics
-    Roles:
-      - !Ref DocspaceReverseProxyRole
-    PolicyDocument:
-      Version: 2012-10-17
-      Statement:
-        - Effect: Allow
-          Action:
-            - cloudwatch:PutMetricData
-          Resource: "*"
 
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
