@@ -1,6 +1,5 @@
 'use strict';
 
-import AWS from 'aws-sdk';
 const cachedItem = {};
 const regionsMap = {
   'us-west-2': 'oforms.onlyoffice.com',
