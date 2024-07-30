@@ -53,6 +53,29 @@ Resources:
         ApplyOn: None
       PackageType: Zip
       Role: !GetAtt DocspaceReverseProxyRole.Arn
+    
+  zoomreverseproxy:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: zoom-reverse-proxy/
+      Description: ""
+      MemorySize: 128
+      Timeout: 3
+      Handler: index.handler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      EphemeralStorage:
+        Size: 512
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+      SnapStart:
+        ApplyOn: None
+      PackageType: Zip
+      Role: !GetAtt DocspaceReverseProxyRole.Arn
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
