@@ -31,6 +31,7 @@ jobs:
             export DYNAMODB_TABLE_NAME="${{ secrets.MAIN_DYNAMODB_TABLE_NAME }}"
           fi
           sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./docspace-reverse-proxy/index.mjs
+          sed -i "s/dynamodb_table_name_placeholder/${DYNAMODB_TABLE_NAME}/g" ./zoom-reverse-proxy/index.mjs
       
       - name: Set viewer request domain name variable
         run: |
