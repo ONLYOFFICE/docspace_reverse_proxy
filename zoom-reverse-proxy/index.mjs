@@ -14,7 +14,14 @@ const ddbRegionsMap = {
 const dynamodbTableName = "dynamodb_table_name_placeholder";
 
 const execRegionCode = process.env.AWS_REGION;
-var ddbClientRegion = ddbRegionsMap[execRegionCode] || ddbRegionsMap["default"];
+
+var ddbClientRegion = ddbRegionsMap["default"];
+
+if (ddbRegionsMap[execRegionCode]) {
+  ddbClientRegion = ddbRegionsMap[execRegionCode];
+
+  console.log("change ddbClient region from %s to %s", ddbRegionsMap["default"], ddbClientRegion);
+}
 
 console.log("DynamoDB client region set to: %s", ddbClientRegion);
 
