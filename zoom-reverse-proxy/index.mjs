@@ -1,6 +1,6 @@
 'use strict';
 
-const AWS = require('aws-sdk');
+import AWS from 'aws-sdk';
 const cachedItem = {};
 const regionsMap = {
   'us-west-2': 'oforms.onlyoffice.com',
@@ -19,7 +19,7 @@ var ddbClientRegion = ddbRegionsMap[execRegionCode] || ddbRegionsMap["default"];
 
 console.log("DynamoDB client region set to: %s", ddbClientRegion);
 
-const { DynamoDBClient, GetItemCommand } = require("@aws-sdk/client-dynamodb");
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 
 async function getTenantRegion(ddbRegion, tenantDomain) {
   console.log("Fetching tenant region for domain: %s from DynamoDB region: %s", tenantDomain, ddbRegion);
@@ -46,7 +46,7 @@ async function getTenantRegion(ddbRegion, tenantDomain) {
   }
 }
 
-exports.handler = async (event) => {
+export async function handler(event) {
   const request = event.Records[0].cf.request;
   const headers = request.headers;
   const fullDomain = headers.host[0].value.toLowerCase();
@@ -77,4 +77,4 @@ exports.handler = async (event) => {
   }
 
   return request;
-};
+}
