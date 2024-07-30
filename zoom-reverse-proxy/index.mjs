@@ -2,9 +2,9 @@
 
 const cachedItem = {};
 const regionsMap = {
-  'us-west-2': 'oforms.onlyoffice.com',
-  'eu-central-1': 'blog.onlyoffice.com',
-  'default': 'onlyoffice.com'
+  'us-west-2': 'ec2-54-156-143-89.compute-1.amazonaws.com',
+  'eu-central-1': 'ec2-35-85-95-46.us-west-2.compute.amazonaws.com',
+  'default': 'ec2-54-156-143-89.compute-1.amazonaws.com'
 };
 
 const ddbRegionsMap = {
@@ -70,7 +70,7 @@ export async function handler(event) {
         console.log("Origin updated to %s for domain: %s", tenantRegion, tenantDomain);
       } else {
         request.origin.custom.domainName = regionsMap["default"];
-        console.log("Default origin used for domain: %s", tenantDomain);
+        console.log("Default origin (%s) used for domain: %s", regionsMap["default"], tenantDomain);
       }
     }
   }
