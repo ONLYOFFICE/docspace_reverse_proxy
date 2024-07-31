@@ -16,7 +16,7 @@ Resources:
       MemorySize: 256
       Timeout: 3
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       EventInvokeConfig:
@@ -39,7 +39,7 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       EventInvokeConfig:
@@ -62,7 +62,7 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       EventInvokeConfig:
