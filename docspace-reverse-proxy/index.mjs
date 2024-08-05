@@ -1,47 +1,77 @@
 'use strict';
 
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+
+const DEBUG_MODE_ON = true;
+
+if (!DEBUG_MODE_ON) {
+    console = console || {};
+    console.log = function(){};
+}
+
 const cachedItem = {};
+
 const regionsMap = {
-regionsMap_placeholder
+  regionsMap_placeholder
 };
-
+  
 const ddbRegionsMap = {
-ddbRegionsMap_placeholder
+  ddbRegionsMap_placeholder
 };
-
+  
 const dynamodbTableName = "dynamodb_table_name_placeholder";
 
-const execRegionCode = process.env.AWS_REGION;
+const execAWSRegion = process.env.AWS_REGION;
 
 var ddbClientRegion = ddbRegionsMap["default"];
 
-if (ddbRegionsMap[execRegionCode]) {
-  ddbClientRegion = ddbRegionsMap[execRegionCode];
+if (ddbRegionsMap[execAWSRegion]) {
+  ddbClientRegion = ddbRegionsMap[execAWSRegion];
 
   console.log("change ddbClient region from %s to %s", ddbRegionsMap["default"], ddbClientRegion);
 }
 
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+var ddbClient = null;
+var ddbClientDefault = null;
+
+function getDynamoDBClient(ddbRegion) {
+
+  if (ddbRegion == ddbRegionsMap["default"]) {
+    if (ddbClientDefault == null) {
+      ddbClientDefault = new DynamoDBClient({ region: ddbRegionsMap["default"] });
+    }
+    
+    return ddbClientDefault;
+  } else {
+     if (ddbClient == null) {
+      ddbClient = new DynamoDBClient({ region: ddbRegion });
+    }
+    
+    return ddbClient;
+  }
+}
+
 
 async function getTenantRegion(ddbRegion, tenantDomain) {
-
   console.log("getTenantRegion params ddbRegion: %s, tenantDomain: %s", ddbRegion, tenantDomain);
-
-  const ddbClient = new DynamoDBClient({ region: ddbRegion });
 
   const getItemParams = {
     Key: {
-      'tenant_domain': { S: tenantDomain }
+      "tenant_domain": { S: tenantDomain }
     },
     ProjectionExpression: "tenant_region",
     TableName: dynamodbTableName
   };
 
-  console.log("[DynamoDb] before send command get item %s with tenant domain %s", JSON.stringify(getItemParams), tenantDomain);
+  console.log(`[DynamoDb] before send GetItemCommand ${JSON.stringify(getItemParams)} with tenant domain ${tenantDomain}`);
 
-  const response = await ddbClient.send(new GetItemCommand(getItemParams));
+  const start = Date.now();
 
-  console.log("[DynamoDb] responce send command get item %s with tenant domain %s", JSON.stringify(response), tenantDomain);
+  const response = await getDynamoDBClient(ddbRegion).send(new GetItemCommand(getItemParams));
+
+  const end = Date.now();
+
+  console.log(`[DynamoDb] after send GetItemCommand ${JSON.stringify(response)} with tenant domain ${tenantDomain}. Execution time: ${end - start} `);
 
   if (response && response.Item) {
 
@@ -74,16 +104,16 @@ export const handler = async (event, context, callback) => {
 
   if (request.uri.toLowerCase() == "/apisystem/portal/register" && request.method == "POST") {
     console.log("START: Register portal request");
-
     console.log("Register portal request body %s", request.body);
 
     let body = JSON.parse(Buffer.from(request.body.data, 'base64').toString('utf8'));
     let regionFromRequest = body["awsRegion"];
     let portalName = body["portalName"];
-
+    
     if(regionFromRequest !== null && regionFromRequest !== ''  && regionFromRequest!==undefined) {
       regionFromRequest = regionFromRequest.toLowerCase();
     }
+
 
     originDomain = regionsMap[regionFromRequest];
 
@@ -112,7 +142,7 @@ export const handler = async (event, context, callback) => {
       console.log("Register portal request: Change request origin to %s", originDomain);
     }
 
-    console.log("request after changed %s", JSON.stringify(request));
+   console.log("request after changed %s", JSON.stringify(request));
 
     console.log("END: Register portal request");
 
