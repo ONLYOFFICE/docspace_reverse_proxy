@@ -13,7 +13,7 @@ Resources:
     Properties:
       CodeUri: docspace-reverse-proxy/
       Description: ""
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 3
       Handler: index.handler
       Runtime: nodejs20.x
