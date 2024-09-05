@@ -2,9 +2,7 @@
 
 const cachedItem = {};
 const regionsMap = {
-  'us-west-2': 'ec2-54-156-143-89.compute-1.amazonaws.com',
-  'eu-central-1': 'ec2-35-85-95-46.us-west-2.compute.amazonaws.com',
-  'default': 'ec2-54-156-143-89.compute-1.amazonaws.com'
+  regionsMap_placeholder
 };
 
 const ddbRegionsMap = {
