@@ -13,10 +13,10 @@ Resources:
     Properties:
       CodeUri: docspace-reverse-proxy/
       Description: ""
-      MemorySize: 256
+      MemorySize: 512
       Timeout: 3
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       EventInvokeConfig:
@@ -39,7 +39,30 @@ Resources:
       MemorySize: 128
       Timeout: 3
       Handler: index.handler
-      Runtime: nodejs18.x
+      Runtime: nodejs20.x
+      Architectures:
+        - x86_64
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      EphemeralStorage:
+        Size: 512
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+      SnapStart:
+        ApplyOn: None
+      PackageType: Zip
+      Role: !GetAtt DocspaceReverseProxyRole.Arn
+    
+  zoomreverseproxy:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: zoom-reverse-proxy/
+      Description: ""
+      MemorySize: 128
+      Timeout: 3
+      Handler: index.handler
+      Runtime: nodejs20.x
       Architectures:
         - x86_64
       EventInvokeConfig:
@@ -130,12 +153,13 @@ Resources:
               - logs:CreateLogGroup
               - logs:CreateLogStream
               - logs:PutLogEvents
+              - cloudwatch:PutMetricData
             Resource: "*"
 
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
     Properties:
-      Description: Allows functions to write logs
+      Description: Set dynamodb permissions
       Roles:
         - !Ref DocspaceReverseProxyRole
       PolicyDocument:
