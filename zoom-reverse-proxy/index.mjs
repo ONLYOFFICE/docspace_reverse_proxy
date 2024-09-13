@@ -11,7 +11,7 @@ if (!DEBUG_MODE_ON) {
 
 const cachedItem = {};
 const regionsMap = {
-  regionsMap_placeholder
+  zoom_regionsMap_placeholder
 };
 
 const ddbRegionsMap = {

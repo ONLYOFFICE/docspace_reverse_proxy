@@ -47,11 +47,13 @@ jobs:
           if [[ "${{ github.ref_name }}" == "develop" ]]; then
             echo '${{ secrets.DEVELOP_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
             echo '${{ secrets.DEVELOP_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
+            echo '${{ secrets.ZOOM_DEVELOP_REGIONS_MAP_BASE64 }}' | base64 -d > zoom_regions_map.tmp
           elif [[ "${{ github.ref_name }}" == "main" ]]; then
             echo '${{ secrets.MAIN_REGIONS_MAP_BASE64 }}' | base64 -d > regions_map.tmp
             echo '${{ secrets.MAIN_DDB_REGIONS_MAP_BASE64 }}' | base64 -d > ddb_regions_map.tmp
           fi
           awk -v rmap="$(<regions_map.tmp)" '{ gsub(/regionsMap_placeholder/, rmap); print; }' ./docspace-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./docspace-reverse-proxy/index.mjs
+          awk -v rmap="$(<zoom_regions_map.tmp)" '{ gsub(/zoom_regionsMap_placeholder/, rmap); print; }' ./zoom-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./zoom-reverse-proxy/index.mjs
           awk -v rmap="$(<ddb_regions_map.tmp)" '{ gsub(/ddbRegionsMap_placeholder/, rmap); print; }' ./docspace-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./docspace-reverse-proxy/index.mjs
           awk -v rmap="$(<ddb_regions_map.tmp)" '{ gsub(/ddbRegionsMap_placeholder/, rmap); print; }' ./zoom-reverse-proxy/index.mjs > temp_index.mjs && mv temp_index.mjs ./zoom-reverse-proxy/index.mjs
 
