@@ -75,7 +75,7 @@ Resources:
       SnapStart:
         ApplyOn: None
       PackageType: Zip
-      Role: !GetAtt DocspaceReverseProxyRole.Arn
+      Role: !GetAtt ZoomReverseProxyRole.Arn
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
@@ -138,6 +138,20 @@ Resources:
               Service:
                 - "lambda.amazonaws.com"
                 - "edgelambda.amazonaws.com"
+
+  ZoomReverseProxyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+                - "edgelambda.amazonaws.com"
+
   # ==== POLICIES ==== #
   PublishLogsPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -155,6 +169,23 @@ Resources:
               - logs:PutLogEvents
               - cloudwatch:PutMetricData
             Resource: "*"
+    
+  ZoomPublishLogsPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Description: Allows functions to write logs for zoom
+      Roles:
+        - !Ref ZoomReverseProxyRole
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Deny
+            Action:
+              - logs:CreateLogGroup
+              - logs:CreateLogStream
+              - logs:PutLogEvents
+              - cloudwatch:PutMetricData
+            Resource: "*"
 
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -162,6 +193,7 @@ Resources:
       Description: Set dynamodb permissions
       Roles:
         - !Ref DocspaceReverseProxyRole
+        - !Ref ZoomReverseProxyRole
       PolicyDocument:
         Version: 2012-10-17
         Statement:
