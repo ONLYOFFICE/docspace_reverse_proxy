@@ -1,5 +1,14 @@
 'use strict';
 
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+
+const DEBUG_MODE_ON = true;
+
+if (!DEBUG_MODE_ON) {
+    console = console || {};
+    console.log = function(){};
+}
+
 const cachedItem = {};
 const regionsMap = {
   regionsMap_placeholder
