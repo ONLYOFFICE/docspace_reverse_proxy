@@ -79,7 +79,6 @@ Resources:
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
-    DeletionProtectionEnabled: true
     DeletionPolicy: Retain
     Properties:
       TableName: develop-docspace-tenants_region
