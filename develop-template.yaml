@@ -125,11 +125,6 @@ Resources:
             TargetValue: 70
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
-      Tags:
-      - Key: billing
-        Value: docspace-test
-      - Key: Name
-        Value: develop-docspace-tenants_region
 
   # ==== ROLES ==== #
   DocspaceReverseProxyRole:
