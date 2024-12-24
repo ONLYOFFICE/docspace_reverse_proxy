@@ -54,55 +54,6 @@ Resources:
       PackageType: Zip
       Role: !GetAtt DocspaceReverseProxyRole.Arn
 
-  GlobalDynamoDBTable:
-    Type: AWS::DynamoDB::GlobalTable
-    DeletionPolicy: Retain
-    Properties:
-      TableName: develop-docspace-tenants_region
-      AttributeDefinitions:
-        - AttributeName: tenant_domain
-          AttributeType: S
-      KeySchema:
-        - AttributeName: tenant_domain
-          KeyType: HASH
-      Replicas:
-        - Region: us-east-1
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: us-east-2
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: us-west-2
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: eu-central-1
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-      WriteProvisionedThroughputSettings:
-        WriteCapacityAutoScalingSettings:
-          MinCapacity: 1
-          MaxCapacity: 10
-          TargetTrackingScalingPolicyConfiguration:
-            TargetValue: 70
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
-
   # ==== ROLES ==== #
   DocspaceReverseProxyRole:
     Type: AWS::IAM::Role
