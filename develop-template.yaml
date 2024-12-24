@@ -53,29 +53,6 @@ Resources:
         ApplyOn: None
       PackageType: Zip
       Role: !GetAtt DocspaceReverseProxyRole.Arn
-    
-  zoomreverseproxy:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: zoom-reverse-proxy/
-      Description: ""
-      MemorySize: 128
-      Timeout: 3
-      Handler: index.handler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      EventInvokeConfig:
-        MaximumEventAgeInSeconds: 21600
-        MaximumRetryAttempts: 2
-      EphemeralStorage:
-        Size: 512
-      RuntimeManagementConfig:
-        UpdateRuntimeOn: Auto
-      SnapStart:
-        ApplyOn: None
-      PackageType: Zip
-      Role: !GetAtt ZoomReverseProxyRole.Arn
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
@@ -141,20 +118,6 @@ Resources:
                 - "lambda.amazonaws.com"
                 - "edgelambda.amazonaws.com"
 
-  ZoomReverseProxyRole:
-    Type: AWS::IAM::Role
-    DeletionPolicy: Retain
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action: sts:AssumeRole
-            Principal:
-              Service:
-                - "lambda.amazonaws.com"
-                - "edgelambda.amazonaws.com"
-
   # ==== POLICIES ==== #
   PublishLogsPolicy:
     Type: AWS::IAM::ManagedPolicy
@@ -174,24 +137,6 @@ Resources:
               - cloudwatch:PutMetricData
             Resource: "*"
     
-  ZoomPublishLogsPolicy:
-    Type: AWS::IAM::ManagedPolicy
-    DeletionPolicy: Retain
-    Properties:
-      Description: Allows functions to write logs for zoom
-      Roles:
-        - !Ref ZoomReverseProxyRole
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Deny
-            Action:
-              - logs:CreateLogGroup
-              - logs:CreateLogStream
-              - logs:PutLogEvents
-              - cloudwatch:PutMetricData
-            Resource: "*"
-
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
     DeletionPolicy: Retain
@@ -199,7 +144,6 @@ Resources:
       Description: Set dynamodb permissions
       Roles:
         - !Ref DocspaceReverseProxyRole
-        - !Ref ZoomReverseProxyRole
       PolicyDocument:
         Version: 2012-10-17
         Statement:
