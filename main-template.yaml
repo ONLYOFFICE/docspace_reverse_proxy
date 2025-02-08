@@ -56,6 +56,7 @@ Resources:
 
   GlobalDynamoDBTable:
     Type: AWS::DynamoDB::GlobalTable
+    DeletionPolicy: Retain
     Properties:
       TableName: main-docspace-tenants_region
       AttributeDefinitions:
@@ -112,6 +113,7 @@ Resources:
   # ==== ROLES ==== #
   DocspaceReverseProxyRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -125,6 +127,7 @@ Resources:
   # ==== POLICIES ==== #
   PublishLogsPolicy:
     Type: AWS::IAM::ManagedPolicy
+    DeletionPolicy: Retain
     Properties:
       Description: Allows functions to write logs
       Roles:
@@ -141,6 +144,7 @@ Resources:
 
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
+    DeletionPolicy: Retain
     Properties:
       Description: Allows functions to write logs
       Roles:

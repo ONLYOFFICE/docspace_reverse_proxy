@@ -53,81 +53,11 @@ Resources:
         ApplyOn: None
       PackageType: Zip
       Role: !GetAtt DocspaceReverseProxyRole.Arn
-    
-  zoomreverseproxy:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: zoom-reverse-proxy/
-      Description: ""
-      MemorySize: 128
-      Timeout: 3
-      Handler: index.handler
-      Runtime: nodejs20.x
-      Architectures:
-        - x86_64
-      EventInvokeConfig:
-        MaximumEventAgeInSeconds: 21600
-        MaximumRetryAttempts: 2
-      EphemeralStorage:
-        Size: 512
-      RuntimeManagementConfig:
-        UpdateRuntimeOn: Auto
-      SnapStart:
-        ApplyOn: None
-      PackageType: Zip
-      Role: !GetAtt DocspaceReverseProxyRole.Arn
-
-  GlobalDynamoDBTable:
-    Type: AWS::DynamoDB::GlobalTable
-    Properties:
-      TableName: develop-docspace-tenants_region
-      AttributeDefinitions:
-        - AttributeName: tenant_domain
-          AttributeType: S
-      KeySchema:
-        - AttributeName: tenant_domain
-          KeyType: HASH
-      Replicas:
-        - Region: us-east-1
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: us-east-2
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: us-west-2
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-        - Region: eu-central-1
-          ReadProvisionedThroughputSettings:
-            ReadCapacityAutoScalingSettings:
-              MinCapacity: 1
-              MaxCapacity: 10
-              TargetTrackingScalingPolicyConfiguration:
-                TargetValue: 70
-      WriteProvisionedThroughputSettings:
-        WriteCapacityAutoScalingSettings:
-          MinCapacity: 1
-          MaxCapacity: 10
-          TargetTrackingScalingPolicyConfiguration:
-            TargetValue: 70
-      StreamSpecification:
-        StreamViewType: NEW_AND_OLD_IMAGES
 
   # ==== ROLES ==== #
   DocspaceReverseProxyRole:
     Type: AWS::IAM::Role
+    DeletionPolicy: Retain
     Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -138,9 +68,11 @@ Resources:
               Service:
                 - "lambda.amazonaws.com"
                 - "edgelambda.amazonaws.com"
+
   # ==== POLICIES ==== #
   PublishLogsPolicy:
     Type: AWS::IAM::ManagedPolicy
+    DeletionPolicy: Retain
     Properties:
       Description: Allows functions to write logs
       Roles:
@@ -155,9 +87,10 @@ Resources:
               - logs:PutLogEvents
               - cloudwatch:PutMetricData
             Resource: "*"
-
+    
   DyanmoDBFullAccessPolicy:
     Type: AWS::IAM::ManagedPolicy
+    DeletionPolicy: Retain
     Properties:
       Description: Set dynamodb permissions
       Roles:
