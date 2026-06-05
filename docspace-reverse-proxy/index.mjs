@@ -103,7 +103,7 @@ export const handler = async (event, context, callback) => {
   let originDomain;
   let path = request.uri.toLowerCase();
 
-  if ((path == "/apisystem/portal/register" || path == "/apisystem/portal/registerbyemail") && request.method == "POST") {
+  if ((path == "/apisystem/portal/register" || path == "/apisystem/portal/registerbyemail" || path == "/apisystem/portal/provision") && request.method == "POST") {
     console.log("START: Register portal request");
     console.log("Register portal request body %s", request.body);
 
