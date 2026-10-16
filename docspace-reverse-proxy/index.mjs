@@ -89,7 +89,7 @@ async function getTenantRegion(ddbRegion, tenantDomain) {
   }
 }
 
-export const handler = async (event, context, callback) => {
+export const handler = async (event, context) => {
   console.log(JSON.stringify(event));
 
   // Extract the request from the CloudFront event that is sent to Lambda@Edge 
@@ -145,7 +145,7 @@ export const handler = async (event, context, callback) => {
     console.log("END: Register portal request");
 
     // Return to CloudFront
-    return callback(null, request);
+    return request;
   }
 
 
@@ -186,5 +186,5 @@ export const handler = async (event, context, callback) => {
   }
 
   // Return to CloudFront
-  return callback(null, request);
+  return request;
 };
