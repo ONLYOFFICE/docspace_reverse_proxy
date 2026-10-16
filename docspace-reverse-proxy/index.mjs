@@ -111,9 +111,7 @@ export const handler = async (event, context, callback) => {
     let regionFromRequest = body["awsRegion"];
     let portalName = body["portalName"];
     
-    if (typeof regionFromRequest === "string") {
-      regionFromRequest = regionFromRequest.trim().toLowerCase();
-    }
+    regionFromRequest = typeof regionFromRequest === "string" ? regionFromRequest.trim().toLowerCase() : null;
 
     originDomain = regionFromRequest && Object.hasOwn(regionsMap, regionFromRequest) ? regionsMap[regionFromRequest] : null;
 
