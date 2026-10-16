@@ -103,7 +103,7 @@ export const handler = async (event, context, callback) => {
   let originDomain;
   let path = request.uri.toLowerCase();
 
-  if ((path == "/apisystem/portal/register" || path == "/apisystem/portal/registerbyemail" || path == "/apisystem/portal/provision") && request.method == "POST") {
+  if ((path == "/apisystem/portal/register" || path == "/apisystem/portal/registerbyemail" || path == "/apisystem/portal/registerbyoauth" || path == "/apisystem/portal/provision") && request.method == "POST") {
     console.log("START: Register portal request");
     console.log("Register portal request body %s", request.body);
 
@@ -111,29 +111,26 @@ export const handler = async (event, context, callback) => {
     let regionFromRequest = body["awsRegion"];
     let portalName = body["portalName"];
     
-    if(regionFromRequest !== null && regionFromRequest !== ''  && regionFromRequest!==undefined) {
-      regionFromRequest = regionFromRequest.toLowerCase();
-    }
+    regionFromRequest = typeof regionFromRequest === "string" ? regionFromRequest.trim().toLowerCase() : null;
 
-
-    originDomain = regionsMap[regionFromRequest];
+    originDomain = regionFromRequest && Object.hasOwn(regionsMap, regionFromRequest) ? regionsMap[regionFromRequest] : null;
 
     console.log("Register portal request: Origin Domain is %s, awsRegion is %s", originDomain, regionFromRequest);
 
-    if (regionFromRequest == null) {
-      console.log("Register portal request: awsRegion param is null. Trying set to default");
+    if (originDomain == null) {
+      console.log("Register portal request: awsRegion '%s' is empty or unknown. Trying set to default", regionFromRequest);
 
+      regionFromRequest = ddbRegionsMap["default"];
       originDomain = regionsMap["default"];
-      body["awsRegion"] = ddbRegionsMap["default"];
+    }
+
+    // the backend stores body.awsRegion in DynamoDB as is, so it must name the region the request is routed to
+    if (body["awsRegion"] !== regionFromRequest) {
+      body["awsRegion"] = regionFromRequest;
       request.body.data = Buffer.from(JSON.stringify(body), 'utf8').toString('base64');
       request.body.action = "replace";
 
       console.log(request.body.data);
-
-    }
-
-    if (originDomain == null) {
-      originDomain = regionsMap["default"];
     }
 
     console.log("Register portal request: portalName: %s, regionFromRequest: %s, originDomain: %s", portalName, regionFromRequest, originDomain);
