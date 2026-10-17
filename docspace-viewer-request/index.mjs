@@ -1,6 +1,6 @@
 'use strict';
 
-export const handler = async (event, context, callback) => {
+export const handler = async (event, context) => {
     console.log(JSON.stringify(event));
   
     // Extract the request from the CloudFront event that is sent to Lambda@Edge 
@@ -33,8 +33,8 @@ export const handler = async (event, context, callback) => {
             },
         };
         
-        return callback(null, response);   
+        return response;
     }
 
-    return callback(null, request);
+    return request;
 }
